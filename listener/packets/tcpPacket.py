@@ -1,13 +1,17 @@
 from listener.packets.abstractPacket import AbstractPacket
 
 class TcpPacket(AbstractPacket):
-    def __init__(self):
+    
+    
+    def __init__(self,binPacket):
         self.msg = ''
+        self.parsedPacket = []
+        self.binPacket = binPacket
         self.status = self.STATUS_INITIATED
         self.parse()
     
     def parse(self):
-            self.addMsg('Started Parsing TCP packet')
+        self.addMsg('Started Parsing TCP packet')
             
        
     def getMsg(self):

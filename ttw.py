@@ -12,12 +12,8 @@ def main(argv):
         opts = getopt.getopt(argv, '', ['verbose=', 'protocol=' ])
         '''
          options:
-          --cid=CID of connection
-          --verbose=true|false to tell or not user what I'm doing
-          --protocol=tcp listen to all tcp connections and only them
-          --destination=google.com listen only to connections to the host
-          --log=/tmp/log.txt dump all the traffic to
-          --port=21 listen to all the stuff been send to port
+          --verbose=true|false to tell or not user what tool is doing 
+          --protocol=tcp|udp|ucmp|all listen to {protocol} connections
         '''
    
         verbose = False
@@ -37,12 +33,12 @@ def main(argv):
         listener.getPartyStarted()
         
     except getopt.GetoptError:
-        print('ttw.py verbose=true')
+        print('./ttw.py --verbose=true --protocol=tcp')
         sys.exit(2)
     except 'otherError':
         sys.exit(255)
-    except 'KeyboardInterrupt':
-        print('Keyboard interrupted')
+    except KeyboardInterrupt:
+        listener.printStatistic()
         sys.exit(2)
         
 if __name__ == "__main__":
