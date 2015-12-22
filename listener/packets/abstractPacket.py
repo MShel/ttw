@@ -16,11 +16,6 @@ class AbstractPacket:
     def parse(self):
         pass
         
-    @abstractmethod
-    def writePacket(self):
-        pass
-
-    @abstractmethod
     def decryptData(self):
         pass
     

@@ -34,7 +34,7 @@ def main(argv):
                     protocol = arg.lower()
 
         listener = Listener(protocol, verbose)
-        listener.getStream()
+        listener.getPartyStarted()
         
     except getopt.GetoptError:
         print('ttw.py verbose=true')

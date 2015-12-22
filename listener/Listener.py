@@ -63,7 +63,7 @@ class Listener:
     def getProtocol(self):
         return self.protocol
     def setProtocol(self, protocol):
-        self.protocol = protocol      
+        self.protocol = str.lower(protocol)      
     
     def getLogger(self):
         return self.logger
