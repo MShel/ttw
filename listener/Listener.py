@@ -9,20 +9,24 @@ from struct import *
 from listener.packets.packetFactory import PacketFactory
 
 class Listener:
+    
+    ETHERNET_HEADER_LENGTH = 14
+    
     def __init__(self, protocol='all', verbose=False,):
         self.logger = None
-        self.protocols = [('tcp', 'udp', 'icmp'), ('8', '1', '23')]
+        self.protocols = [['tcp', 6], ['udp', 17], ['icmp', 1]]
         self.startDateTime = datetime.now();
         self.setVerbose(verbose)
         self.setProtocol(protocol)
-        self.interfaces = self.getInterfaces()
-        self.getAllConnections()
+        self.protocolIndex = list(filter(lambda pr: pr[0] == self.getProtocol(), self.protocols))[0][1]
+        #self.interfaces = self.getInterfaces()
+        #self.getAllConnections()
         
     def getAllConnections(self):
-        self.indexInterface = raw_input('Select an interface - number from 0 to ' + str(len(self.interfaces) - 1) + '^')
+        #self.indexInterface = input('Select an interface - number from 0 to ' + str(len(self.interfaces) - 1) + '^')
         pass
     
-    def getInterfaces(self):
+    def getInterfaces(self) ->list:
         networkInterfaces = netifaces.interfaces()
         
         for i in range(len(networkInterfaces)):
@@ -40,26 +44,29 @@ class Listener:
         # receive a packet
         while True:
             binPacket, sendersAddressInfo = allConnectionsSocket.recvfrom(65565)
-            # parse ethernet header
-            eth_length = 14
+            
+
      
-            eth_header = binPacket[:eth_length]
+            eth_header = binPacket[:self.ETHERNET_HEADER_LENGTH]
             eth = unpack('!6s6sH' , eth_header)
             eth_protocol = socket.ntohs(eth[2])
-            if (self.getProtocol() == 'all' or self.protocols[self.getProtocol()] == eth_protocol):
-                packetObj = PacketFactory.factory(eth_protocol, binPacket, self.getVerbose())
-                if self.getVerbose() == True: print(packetObj.getMsg())
-                if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())
+            print(eth_protocol)
+            print(binPacket)
+            print(sendersAddressInfo)
+            if (self.getProtocol() == 'all' or self.protocolIndex == eth_protocol):
+                # packetObj = PacketFactory.factory(eth_protocol, binPacket, self.getVerbose())
+                # if self.getVerbose() == True: print(packetObj.getMsg())
+                # if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())
                 self.parsedPacketsCounter += 1
                 
     def printStatistic(self):
         endTime = datetime.now()
         print(endTime.strftime('Finished Listening at - %H:%M:%S:%f | %b %d %Y'))
-        print('Listened for '+ str(endTime - self.startDateTime))
-        print('Sent: ' )
-        print(str(self.parsedPackets).ljust(4) + ' total packets')
-        #print(str(self.parsedPackets).ljust(4) + ' packetType packages')
-        #print(str(self.parsedPackets) + ' to {address}')
+        print('Listened for ' + str(endTime - self.startDateTime))
+        print('Sent: ')
+        print(str(self.parsedPacketsCounter).ljust(4) + ' total packets')
+        print(str(self.parsedPacketsCounter).ljust(4) + ' packetType packages')
+        print(str(self.parsedPacketsCounter) + ' to {address}')
         
         
            

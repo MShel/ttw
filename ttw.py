@@ -9,7 +9,7 @@ def main(argv):
     # Clear the screen
     subprocess.call('clear', shell=True)
     try:
-        opts = getopt.getopt(argv, '', ['verbose=', 'protocol=' ])
+        opts, args = getopt.getopt(argv, '', ['verbose=', 'protocol=' ])
         '''
          options:
           --verbose=true|false to tell or not user what tool is doing 
@@ -35,8 +35,12 @@ def main(argv):
     except getopt.GetoptError:
         print('./ttw.py --verbose=true --protocol=tcp')
         sys.exit(2)
-    except 'otherError':
-        sys.exit(255)
+    except PermissionError:
+        print('You must run it from root to get an access to all connections')
+        sys.exit(2)
+    except IndexError:
+        print('Provided protocol is not supported')
+        sys.exit(2)
     except KeyboardInterrupt:
         listener.printStatistic()
         sys.exit(2)
