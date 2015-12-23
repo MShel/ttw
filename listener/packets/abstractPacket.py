@@ -4,6 +4,8 @@ class AbstractPacket:
     
     __metaclass__ = ABCMeta
     
+    msg = ''
+    
     STATUS_INITIATED = 'INITIATED'
     
     STATUS_PARSED = 'PARSED'
@@ -11,6 +13,7 @@ class AbstractPacket:
     def __init__(self):
         self.verbose = False
         self.status = None
+        self.msg=''
         
     @abstractmethod
     def parse(self):
@@ -29,3 +32,9 @@ class AbstractPacket:
     def getVerbose(self):
         return self.verbose
     
+    def getMsg(self):
+        return self.msg
+    
+    def addMsg(self, msg:str):
+        AbstractPacket.msg = AbstractPacket.getMsg(AbstractPacket)+'\n'+msg
+        return AbstractPacket.msg   

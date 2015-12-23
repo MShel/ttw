@@ -6,11 +6,13 @@ import pprint
 import json
 import threading
 from struct import *
+from listener.packets.ipPacket import IpPacket 
 from listener.packets.packetFactory import PacketFactory
 
 class Listener:
     
     ETHERNET_HEADER_LENGTH = 14
+    BUFFER_SIZE = 65565
     
     def __init__(self, protocol='all', verbose=False,):
         self.logger = None
@@ -43,21 +45,21 @@ class Listener:
         print(self.startDateTime.strftime('Started Listening at - %H:%M:%S:%f | %b %d %Y'))
         # receive a packet
         while True:
-            binPacket, sendersAddressInfo = allConnectionsSocket.recvfrom(65565)
-            
-
+            binPacket, sendersAddressInfo = allConnectionsSocket.recvfrom(self.BUFFER_SIZE)
+            #networkAdapter = sendersAddressInfo[0]
      
             eth_header = binPacket[:self.ETHERNET_HEADER_LENGTH]
             eth = unpack('!6s6sH' , eth_header)
             eth_protocol = socket.ntohs(eth[2])
-            print(eth_protocol)
-            print(binPacket)
-            print(sendersAddressInfo)
-            if (self.getProtocol() == 'all' or self.protocolIndex == eth_protocol):
-                # packetObj = PacketFactory.factory(eth_protocol, binPacket, self.getVerbose())
-                # if self.getVerbose() == True: print(packetObj.getMsg())
-                # if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())
-                self.parsedPacketsCounter += 1
+            ##only ip stuff is supported for now
+            if(eth_protocol == 8):
+                ipObj = IpPacket(binPacket,self.ETHERNET_HEADER_LENGTH)
+                if (self.getProtocol() == 'all' or self.protocolIndex == ipObj.protocol):
+                    packetObj = PacketFactory.factory(ipObj.protocol, binPacket, self.getVerbose())
+                    pprint.pprint(packetObj)
+                    if self.getVerbose() == True: print(packetObj.getMsg())
+                    if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())
+                    self.parsedPacketsCounter += 1
                 
     def printStatistic(self):
         endTime = datetime.now()
