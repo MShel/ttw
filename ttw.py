@@ -43,7 +43,10 @@ def main(argv):
         sys.exit(2)
     except KeyboardInterrupt:
         listener.printStatistic()
-        sys.exit(2)
+        sys.exit(1)
+    except ImportError:
+        print('You probably need to install netifaces: \n `pip install netifaces`')
+        sys.exit(2)    
         
 if __name__ == "__main__":
     main(sys.argv[1:])

@@ -5,7 +5,7 @@ from datetime import datetime
 import pprint
 import json
 import threading
-from struct import *
+from struct import unpack
 from listener.packets.ipPacket import IpPacket 
 from listener.packets.packetFactory import PacketFactory
 
@@ -21,14 +21,14 @@ class Listener:
         self.setVerbose(verbose)
         self.setProtocol(protocol)
         self.protocolIndex = list(filter(lambda pr: pr[0] == self.getProtocol(), self.protocols))[0][1]
-        #self.interfaces = self.getInterfaces()
-        #self.getAllConnections()
+        # self.interfaces = self.getInterfaces()
+        # self.getAllConnections()
         
     def getAllConnections(self):
-        #self.indexInterface = input('Select an interface - number from 0 to ' + str(len(self.interfaces) - 1) + '^')
+        # self.indexInterface = input('Select an interface - number from 0 to ' + str(len(self.interfaces) - 1) + '^')
         pass
     
-    def getInterfaces(self) ->list:
+    def getInterfaces(self) -> list:
         networkInterfaces = netifaces.interfaces()
         
         for i in range(len(networkInterfaces)):
@@ -45,17 +45,20 @@ class Listener:
         print(self.startDateTime.strftime('Started Listening at - %H:%M:%S:%f | %b %d %Y'))
         # receive a packet
         while True:
-            binPacket, sendersAddressInfo = allConnectionsSocket.recvfrom(self.BUFFER_SIZE)
-            #networkAdapter = sendersAddressInfo[0]
+            binPacket, sendersInfo = allConnectionsSocket.recvfrom(self.BUFFER_SIZE)
+            # networkAdapter = sendersAddressInfo[0]
      
             eth_header = binPacket[:self.ETHERNET_HEADER_LENGTH]
             eth = unpack('!6s6sH' , eth_header)
             eth_protocol = socket.ntohs(eth[2])
-            ##only ip stuff is supported for now
+            # #only ip stuff is supported for now
             if(eth_protocol == 8):
-                ipObj = IpPacket(binPacket,self.ETHERNET_HEADER_LENGTH)
+                ipObj = IpPacket(binPacket, self.ETHERNET_HEADER_LENGTH)
+                if self.getVerbose() == True: print(ipObj.getMsg())
+                
                 if (self.getProtocol() == 'all' or self.protocolIndex == ipObj.protocol):
-                    packetObj = PacketFactory.factory(ipObj.protocol, binPacket, self.getVerbose())
+                    ipChildPacketBinMargin = ipObj.iphLength + self.ETHERNET_HEADER_LENGTH
+                    packetObj = PacketFactory.factory(ipObj.protocol, binPacket, ipChildPacketBinMargin)
                     pprint.pprint(packetObj)
                     if self.getVerbose() == True: print(packetObj.getMsg())
                     if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())

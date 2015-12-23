@@ -1,28 +1,28 @@
 from listener.packets.abstractPacket import AbstractPacket
 import socket
-from struct import *
+from struct import unpack
 
 class IpPacket(AbstractPacket):
     
     UNPACK_FORMAT = '!BBHHHBBH4s4s'
+    IP_HEADER_LENGTH = 20
     
     def __init__(self, binPacket, ehl):
         self.ethernetHeaderLength = ehl
-        self.parsedPacket = []
         self.binPacket = binPacket
-        self.status = self.STATUS_INITIATED
         self.parse()
     
     def parse(self):
         AbstractPacket.addMsg(AbstractPacket, 'Started Parsing IP packet')
-        ip_header = self.binPacket[self.ethernetHeaderLength:20 + self.ethernetHeaderLength]
-        # now unpack them :)
-        iph = unpack(self.UNPACK_FORMAT , ip_header)
-        version_ihl = iph[0]
-        self.version = version_ihl >> 4
-        ihl = version_ihl & 0xF
-        self.iph_length = ihl * 4
-        self.ttl = iph[5]
-        self.protocol = iph[6]
-        self.s_addr = socket.inet_ntoa(iph[8]);
-        self.d_addr = socket.inet_ntoa(iph[9]);
+        binIpHeader = self.binPacket[self.ethernetHeaderLength:self.ethernetHeaderLength + 20]
+        
+        ipHeader = unpack(self.UNPACK_FORMAT , binIpHeader)
+        binVersion = ipHeader[0]
+        self.version = binVersion >> 4
+        headerLengthBin = binVersion & 0xFe
+        self.iphLength = headerLengthBin * 4
+        self.ttl = ipHeader[5]
+        self.protocol = ipHeader[6]
+        self.fromAddress = str(socket.inet_ntoa(ipHeader[8]));
+        self.toAddress = str(socket.inet_ntoa(ipHeader[9]));
+        AbstractPacket.addMsg(AbstractPacket, 'Parsed IP packet from: ' + self.fromAddress + ' to: ' + self.toAddress)
