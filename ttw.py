@@ -21,13 +21,11 @@ def main(argv):
         
         for opt, arg in opts:
             
-            if opt == '--verbose':
-                if arg.lower() in ('true', 'y'):
-                    verbose = True
+            if opt == '--verbose' and arg.lower() in ('true', 'y'):
+                verbose = True
             
-            if opt == '--protocol' :
-                if arg.lower() in ('tcp', 'udp', 'icmp', 'all'):
-                    protocol = arg.lower()
+            if opt == '--protocol' and arg.lower() in ('tcp', 'udp', 'icmp', 'all'):
+                protocol = arg.lower()
 
         listener = Listener(protocol, verbose)
         listener.getPartyStarted()
