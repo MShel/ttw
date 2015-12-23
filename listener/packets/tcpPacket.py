@@ -14,7 +14,7 @@ class TcpPacket(AbstractPacket):
     
     def parse(self):
         AbstractPacket.addMsg(AbstractPacket, 'Started Parsing TCP packet')
-        binTcpHeader = self.binPacket[self.margin:self.margin + 20]
+        binTcpHeader = self.binPacket[self.headerMargin:self.headerMargin + 20]
         unpackedHeader = unpack(self.UNPACK_FORMAT, binTcpHeader)
         self.fromPort = unpackedHeader[0]
         self.toPort = unpackedHeader[1]
@@ -28,7 +28,7 @@ class TcpPacket(AbstractPacket):
         self.dataSize = len(self.binPacket) - fullHeaderSize
             #get data from the packet
         self.data = self.binPacket[fullHeaderSize:]
-        AbstractPacket.addMsg(AbstractPacket, 'Parsed TCP packet from port: ' + self.fromPort + ' to: ' + self.toPort)
+        AbstractPacket.addMsg(AbstractPacket, 'Parsed TCP  packet from port: ' + self.fromPort + ' to: ' + self.toPort)
 
     def getMsg(self):
         return self.msg

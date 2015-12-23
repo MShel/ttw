@@ -13,7 +13,7 @@ def main(argv):
         '''
          options:
           --verbose=true|false to tell or not user what tool is doing 
-          --protocol=tcp|udp|ucmp|all listen to {protocol} connections
+          --protocol=tcp|udp|icmp|all listen to {protocol} connections
         '''
    
         verbose = False
