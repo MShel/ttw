@@ -21,8 +21,6 @@ class SessionData:
     childPacket - the transport layer packet(TCP/IP)
     '''
     def addPacket(self, parentPacket:AbstractPacket, childPacket:AbstractPacket):
-        self.totalCounter += 1 
-
         
         if(self.fromCounter.get(parentPacket.fromAddress) == None): self.counterFrom += 1
         self.fromCounter.update({parentPacket.fromAddress:self.counterFrom})
@@ -40,5 +38,6 @@ class SessionData:
         self.protocolStat.update({childPacket.getName():self.prName})
      
     def jsonify(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-            sort_keys=True, indent=4)    
+        return json.dumps({ "Requests per sender Addresses":self.fromCounter, "Requests per receiver Ip Addresses":self.toCounter, "Requests per In Port":self.portInCounter, "Requests per Out Port":self.portOutCounter, "Requests per protocol":self.protocolStat}, default=lambda o: o.__dict__,
+                          
+            sort_keys=False, indent=4)    
