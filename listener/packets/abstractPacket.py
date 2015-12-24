@@ -18,7 +18,11 @@ class AbstractPacket:
     @abstractmethod
     def parse(self):
         pass
-        
+    
+    @abstractmethod
+    def getName(self):
+        pass
+           
     def decryptData(self):
         pass
     

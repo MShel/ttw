@@ -5,8 +5,9 @@ from listener.packets.icmpPacket import IcmpPacket
 from listener.packets.abstractPacket import AbstractPacket
 
 class PacketFactory:
-    def factory(packetType: int, binPacket: str, margin: int) -> AbstractPacket:
+    def factory(packetType: int, binPacket: bytes, margin) -> AbstractPacket:
         packet = None
+
         # try:
         if packetType == 6 : packet = TcpPacket(binPacket, margin)
         elif packetType == 17 : packet = UdpPacket(binPacket, margin)
