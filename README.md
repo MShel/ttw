@@ -17,7 +17,7 @@ Trello board with all the plans: [trelloLinkToBoard](https://trello.com/b/MuG5Nh
 * Logger factory + csv loggerHandler
 * more packet classes to support more protoocols
 
-## Example Report for TCP with verbose On
+## Example Report for TCP with verbose Of
 ```
 /ttw$ sudo python3 ttw.py  --verbose=false --protocol=tcp
 Started Listening at - 22:36:41:758742 | Dec 23 2015
