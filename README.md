@@ -1,5 +1,6 @@
 # ttw
 ttw - talking to whom? the python console util to track all your outcome connections
+In other words easily extendable network sniffer with some functionality to analyse requests
 
 command examples:
 * sudo python3 ttw.py  --verbose=true --protocol=tcp
