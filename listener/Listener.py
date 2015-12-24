@@ -2,17 +2,21 @@ import socket
 import subprocess
 import netifaces
 from datetime import datetime
-import pprint
+from pprint import pprint
 import json
 import threading
 from struct import unpack
 from listener.packets.ipPacket import IpPacket 
 from listener.packets.packetFactory import PacketFactory
+from listener.packets.abstractPacket import AbstractPacket
+from stats.sessionData import SessionData
 
 class Listener:
     
     ETHERNET_HEADER_LENGTH = 14
+    ETHERNET_UNPACK_HEADER = '!6s6sH'
     BUFFER_SIZE = 65565
+    
     
     def __init__(self, protocol='all', verbose=False,):
         self.logger = None
@@ -21,6 +25,7 @@ class Listener:
         self.setVerbose(verbose)
         self.setProtocol(protocol)
         self.protocolIndex = list(filter(lambda pr: pr[0] == self.getProtocol(), self.protocols))[0][1]
+        self.sessionData =  SessionData()
         # self.interfaces = self.getInterfaces()
         # self.getAllConnections()
         
@@ -41,37 +46,35 @@ class Listener:
     def getPartyStarted(self):
   
         allConnectionsSocket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
-        self.parsedPacketsCounter = 0
         print(self.startDateTime.strftime('Started Listening at - %H:%M:%S:%f | %b %d %Y'))
         # receive a packet
         while True:
             binPacket, sendersInfo = allConnectionsSocket.recvfrom(self.BUFFER_SIZE)
             # networkAdapter = sendersAddressInfo[0]
      
-            eth_header = binPacket[:self.ETHERNET_HEADER_LENGTH]
-            eth = unpack('!6s6sH' , eth_header)
-            eth_protocol = socket.ntohs(eth[2])
-            # #only ip stuff is supported for now
-            if(eth_protocol == 8):
+            ethernetHeader = binPacket[:self.ETHERNET_HEADER_LENGTH]
+            unpackedEthernetHeader = unpack(self.ETHERNET_UNPACK_HEADER , ethernetHeader)
+            transportProtocol = socket.ntohs(unpackedEthernetHeader[2])
+            # only ip stuff is supported for now
+            if(transportProtocol == 8):
                 ipObj = IpPacket(binPacket, self.ETHERNET_HEADER_LENGTH)
                 if self.getVerbose() == True: print(ipObj.getMsg())
                 
                 if (self.getProtocol() == 'all' or self.protocolIndex == ipObj.protocol):
                     ipChildPacketBinMargin = ipObj.iphLength + self.ETHERNET_HEADER_LENGTH
                     packetObj = PacketFactory.factory(ipObj.protocol, binPacket, ipChildPacketBinMargin)
-                    pprint.pprint(packetObj)
                     if self.getVerbose() == True: print(packetObj.getMsg())
                     if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())
-                    self.parsedPacketsCounter += 1
-                
+                    self.sessionData.addPacket(ipObj, packetObj)
+    
     def printStatistic(self):
         endTime = datetime.now()
         print(endTime.strftime('Finished Listening at - %H:%M:%S:%f | %b %d %Y'))
         print('Listened for ' + str(endTime - self.startDateTime))
-        print('Sent: ')
-        print(str(self.parsedPacketsCounter).ljust(4) + ' total packets')
-        print(str(self.parsedPacketsCounter).ljust(4) + ' packetType packages')
-        print(str(self.parsedPacketsCounter) + ' to {address}')
+        print(self.sessionData.jsonify())
+        # print(str(self.parsedPacketsCounter).ljust(4) + ' total packets')
+        # print(str(self.parsedPacketsCounter).ljust(4) + ' packetType packages')
+        # print(str(self.parsedPacketsCounter) + ' to {address}')
         
         
            
