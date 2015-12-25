@@ -10,7 +10,6 @@ class TcpPacket(AbstractPacket):
     def __init__(self, binPacket: bytes, margin: int):
         self.binPacket = binPacket
         self.headerMargin = margin
-        self.status = self.STATUS_INITIATED
         self.parse()
     
     def parse(self):
