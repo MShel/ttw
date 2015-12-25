@@ -20,12 +20,12 @@ class Listener:
     
     def __init__(self, protocol='all', verbose=False,):
         self.logger = None
-        self.protocols = [['tcp', 6], ['udp', 17], ['icmp', 1]]
+        self.protocols = [['tcp', 6], ['udp', 17], ['icmp', 1], ['all', 0]]
         self.startDateTime = datetime.now();
         self.setVerbose(verbose)
         self.setProtocol(protocol)
         self.protocolIndex = list(filter(lambda pr: pr[0] == self.getProtocol(), self.protocols))[0][1]
-        self.sessionData =  SessionData()
+        self.sessionData = SessionData()
         # self.interfaces = self.getInterfaces()
         # self.getAllConnections()
         
