@@ -17,7 +17,7 @@ Trello board with all the plans: [trelloLinkToBoard](https://trello.com/b/MuG5Nh
 ## Comming soon
 * Logger factory + csv loggerHandler
 * more packet classes to support more protoocols
-* ability to specify adapter to listen on
+* ability to specify network adapter to listen on
 
 ## Example Report for TCP with verbose Of
 ```
