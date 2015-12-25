@@ -13,7 +13,7 @@ class PacketFactory:
         elif packetType == 17 : packet = UdpPacket(binPacket, margin)
         elif packetType == 1 : packet = IcmpPacket(binPacket, margin)
       
-        if packet == None: packet = OthersPacket(binPacket)
+        if packet == None: packet = OthersPacket(binPacket, margin)
             
         # except Exception:
             # figure out the way to let meaningfullExcaption bubble up
