@@ -3,7 +3,7 @@ ttw - talking to whom? the python console util to track all your outcome connect
 In other words easily extendable network sniffer with some functionality to analyse requests
 
 command examples:
-* sudo python3 ttw.py  --verbose=true --protocol=tcp
+* sudo python3 ttw.py  --verbose=true --protocol=tcp --nic=wlan0
 * sudo python3 ttw.py  --verbose=true --protocol=all
 
 for now only IP family is going to be supported...
