@@ -10,9 +10,6 @@ from listener.packets.ipPacket import IpPacket
 from listener.packets.packetFactory import PacketFactory
 from listener.packets.abstractPacket import AbstractPacket
 from stats.sessionData import SessionData
-import IN
-if not 'SO_BINDTODEVICE' in dir(IN):
-    IN.SO_BINDTODEVICE = 25
 
 class Listener:
     
