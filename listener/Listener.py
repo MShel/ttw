@@ -10,6 +10,9 @@ from listener.packets.ipPacket import IpPacket
 from listener.packets.packetFactory import PacketFactory
 from listener.packets.abstractPacket import AbstractPacket
 from stats.sessionData import SessionData
+import IN
+if not 'SO_BINDTODEVICE' in dir(IN):
+    IN.SO_BINDTODEVICE = 25
 
 class Listener:
     
@@ -18,34 +21,29 @@ class Listener:
     BUFFER_SIZE = 65565
     
     
-    def __init__(self, protocol='all', verbose=False,):
+    def __init__(self, protocol='all', verbose=False,nic = None):
         self.logger = None
         self.protocols = [['tcp', 6], ['udp', 17], ['icmp', 1], ['all', 0]]
         self.startDateTime = datetime.now();
         self.setVerbose(verbose)
         self.setProtocol(protocol)
+        self.setNic(nic)
         self.protocolIndex = list(filter(lambda pr: pr[0] == self.getProtocol(), self.protocols))[0][1]
         self.sessionData = SessionData()
         # self.interfaces = self.getInterfaces()
         # self.getAllConnections()
         
-    def getAllConnections(self):
-        # self.indexInterface = input('Select an interface - number from 0 to ' + str(len(self.interfaces) - 1) + '^')
-        pass
-    
-    def getInterfaces(self) -> list:
+    @staticmethod
+    def getInterfaces() -> list:
         networkInterfaces = netifaces.interfaces()
-        
-        for i in range(len(networkInterfaces)):
-            print(str(i) + ' - ' + networkInterfaces[i])
         return networkInterfaces
-    
+   
     '''
-    gets the stream creats Packets, parses and saves them if needed
+    gets the stream creates Packets, parses and saves them if needed
     '''  
     def getPartyStarted(self):
-  
         allConnectionsSocket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
+        allConnectionsSocket.setsockopt(socket.SOL_SOCKET, 25, self.getNic().encode())
         print(self.startDateTime.strftime('Started Listening at - %H:%M:%S:%f | %b %d %Y'))
         # receive a packet
         while True:
@@ -87,6 +85,14 @@ class Listener:
         return self.verbose
     def setVerbose(self, verbose):
         self.verbose = verbose
+    
+    def getNic(self):
+        return self.nic
+  
+    def setNic(self, nic):
+        if nic not in self.getInterfaces():
+            raise Exception("NIC must be in (" + ', '.join(self.getInterfaces())+')')
+        self.nic = nic
     
     def getProtocol(self):
         return self.protocol
