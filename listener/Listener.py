@@ -18,7 +18,7 @@ class Listener:
     BUFFER_SIZE = 65565
     
     
-    def __init__(self, protocol='all', verbose=False,nic = None):
+    def __init__(self, protocol='all', verbose=False, nic='all'):
         self.logger = None
         self.protocols = [['tcp', 6], ['udp', 17], ['icmp', 1], ['all', 0]]
         self.startDateTime = datetime.now();
@@ -33,6 +33,7 @@ class Listener:
     @staticmethod
     def getInterfaces() -> list:
         networkInterfaces = netifaces.interfaces()
+        networkInterfaces.append('all')
         return networkInterfaces
    
     '''
@@ -40,7 +41,9 @@ class Listener:
     '''  
     def getPartyStarted(self):
         allConnectionsSocket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
-        allConnectionsSocket.setsockopt(socket.SOL_SOCKET, 25, self.getNic().encode())
+        
+        if self.getNic() != 'all':
+            allConnectionsSocket.setsockopt(socket.SOL_SOCKET, 25, self.getNic().encode())
         print(self.startDateTime.strftime('Started Listening at - %H:%M:%S:%f | %b %d %Y'))
         # receive a packet
         while True:
@@ -61,17 +64,12 @@ class Listener:
                     if self.getVerbose() == True: print(packetObj.getMsg())
                     if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())
                     self.sessionData.addPacket(ipObj, packetObj)
-    
+
     def printStatistic(self):
         endTime = datetime.now()
         print(endTime.strftime('Finished Listening at - %H:%M:%S:%f | %b %d %Y'))
         print('Listened for ' + str(endTime - self.startDateTime))
         print(self.sessionData.jsonify())
-        # print(str(self.parsedPacketsCounter).ljust(4) + ' total packets')
-        # print(str(self.parsedPacketsCounter).ljust(4) + ' packetType packages')
-        # print(str(self.parsedPacketsCounter) + ' to {address}')
-        
-        
            
     def getPort(self):
         return self.port
@@ -88,7 +86,7 @@ class Listener:
   
     def setNic(self, nic):
         if nic not in self.getInterfaces():
-            raise Exception("NIC must be in (" + ', '.join(self.getInterfaces())+')')
+            raise Exception("NIC must be in (" + ', '.join(self.getInterfaces()) + ')')
         self.nic = nic
     
     def getProtocol(self):

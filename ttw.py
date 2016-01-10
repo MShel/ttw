@@ -20,8 +20,8 @@ def main(argv):
         '''
    
         verbose = False
-        protocol = ''
-        nic = None
+        protocol = 'all'
+        nic = 'all'
         
         for opt, arg in opts:
             
