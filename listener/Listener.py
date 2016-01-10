@@ -7,7 +7,7 @@ import json
 import threading
 from struct import unpack
 from listener.packets.ipPacket import IpPacket 
-from listener.packets.packetFactory import PacketFactory
+from listener.packets.factories.ipFactory import IpFactory
 from listener.packets.abstractPacket import AbstractPacket
 from stats.sessionData import SessionData
 
@@ -57,7 +57,7 @@ class Listener:
                 
                 if (self.getProtocol() == 'all' or self.protocolIndex == ipObj.protocol):
                     ipChildPacketBinMargin = ipObj.iphLength + self.ETHERNET_HEADER_LENGTH
-                    packetObj = PacketFactory.factory(ipObj.protocol, binPacket, ipChildPacketBinMargin)
+                    packetObj = IpFactory.factory(ipObj.protocol, binPacket, ipChildPacketBinMargin)
                     if self.getVerbose() == True: print(packetObj.getMsg())
                     if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())
                     self.sessionData.addPacket(ipObj, packetObj)

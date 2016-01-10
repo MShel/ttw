@@ -3,8 +3,11 @@ from listener.packets.tcpPacket import TcpPacket
 from listener.packets.udpPacket import UdpPacket
 from listener.packets.icmpPacket import IcmpPacket
 from listener.packets.abstractPacket import AbstractPacket
+from listener.packets.factories.abstractFactory import AbstractFactory
 
-class PacketFactory:
+class IpFactory(AbstractFactory):
+  
+    @staticmethod
     def factory(packetType: int, binPacket: bytes, margin) -> AbstractPacket:
         packet = None
 
@@ -19,4 +22,3 @@ class PacketFactory:
             # figure out the way to let meaningfullExcaption bubble up
          #   pass
         return packet    
-    factory = staticmethod(factory)
