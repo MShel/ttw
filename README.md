@@ -15,9 +15,8 @@ Trello board with all the plans: [trelloLinkToBoard](https://trello.com/b/MuG5Nh
 * netifaces
 
 ## Comming soon
-* Stat factory + csv sratMysqlHandler
-* more packet classes to support more protoocols
-* ability to specify network adapter to listen on
+* Stat factory + statMysqlHandler
+* more packet classes to support more protocols
 
 ## Example Report for TCP with verbose Of
 ```
