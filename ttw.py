@@ -2,6 +2,8 @@
 import sys, getopt, subprocess
 from listener.Listener import Listener
 import os
+from pprint import pprint
+
 sys.path.insert(0, os.getcwd())
 
 # Get the args
@@ -9,15 +11,17 @@ def main(argv):
     # Clear the screen
     subprocess.call('clear', shell=True)
     try:
-        opts, args = getopt.getopt(argv, '', ['verbose=', 'protocol=' ])
+        opts, args = getopt.getopt(argv, '', ['verbose=', 'protocol=','nic=' ])
         '''
          options:
           --verbose=true|false to tell or not user what tool is doing 
           --protocol=tcp|udp|icmp|all listen to {protocol} connections
+          --nic= wlan0|lo|eth0 network interfaces
         '''
    
         verbose = False
-        protocol = ''
+        protocol = 'all'
+        nic = 'all'
         
         for opt, arg in opts:
             
@@ -27,7 +31,11 @@ def main(argv):
             if opt == '--protocol' and arg.lower() in ('tcp', 'udp', 'icmp', 'all'):
                 protocol = arg.lower()
 
-        listener = Listener(protocol, verbose)
+            if opt == '--nic' and arg.lower() in Listener.getInterfaces():
+                nic = arg.lower()
+                
+        listener = Listener(protocol, verbose, nic)
+            
         listener.getPartyStarted()
         
     except getopt.GetoptError:
@@ -35,6 +43,9 @@ def main(argv):
         sys.exit(2)
     except PermissionError:
         print('You must run it from root to get an access to all connections')
+        sys.exit(2)
+    except Exception as e:
+        print(e)
         sys.exit(2)
     except IndexError:
         print('Provided protocol is not supported')
