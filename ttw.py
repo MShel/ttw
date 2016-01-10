@@ -11,7 +11,7 @@ def main(argv):
     # Clear the screen
     subprocess.call('clear', shell=True)
     try:
-        opts, args = getopt.getopt(argv, '', ['verbose=', 'protocol=','nic=' ])
+        opts, args = getopt.getopt(argv, 'h', ['verbose=', 'protocol=', 'nic=', 'help=' ])
         '''
          options:
           --verbose=true|false to tell or not user what tool is doing 
@@ -24,6 +24,9 @@ def main(argv):
         nic = 'all'
         
         for opt, arg in opts:
+            if opt in ('--help', '-h'):
+                print('EX. python3 ttw.py --verbose=true --protocol=tcp --nic=wlan0')
+                sys.exit(0)
             
             if opt == '--verbose' and arg.lower() in ('true', 'y'):
                 verbose = True
