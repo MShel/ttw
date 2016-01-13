@@ -29,8 +29,8 @@ class TcpPacket(AbstractPacket):
             # get data from the packet
         self.data = self.binPacket[fullHeaderSize:]
         AbstractPacket.addMsg(AbstractPacket, 'Parsed TCP  packet from port: ' + self.fromPort + ' to: ' + self.toPort)
-        AbstractPacket.addMsg(AbstractPacket, 'TCP-PACKET data:\n\n\n ' + str(self.data) +'\n\n')
-
+        AbstractPacket.addMsg(AbstractPacket, 'TCP-PACKET data:\n\n\n ' + AbstractPacket.getPrintable(str(self.data)) +'\n\n')
+    
     def getMsg(self):
         return self.msg
     

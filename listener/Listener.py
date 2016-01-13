@@ -52,6 +52,7 @@ class Listener:
      
             ethernetHeader = binPacket[:self.ETHERNET_HEADER_LENGTH]
             unpackedEthernetHeader = unpack(self.ETHERNET_UNPACK_HEADER , ethernetHeader)
+          
             transportProtocol = socket.ntohs(unpackedEthernetHeader[2])
             # only ip stuff is supported for now
             if(transportProtocol == 8):

@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+import string
 
 class AbstractPacket:
     
@@ -42,3 +43,12 @@ class AbstractPacket:
     def addMsg(self, msg:str):
         AbstractPacket.msg = AbstractPacket.getMsg(AbstractPacket)+'\n'+msg
         return AbstractPacket.msg   
+    
+    @staticmethod
+    def getPrintable(data):
+        result = ''
+        if isinstance(data, str):
+            result = ''.join(filter(lambda x: x in string.printable, data))
+            with open('/tmp/test.txt', 'a+') as f:
+                f.write('\n\n' + result)
+        return result
