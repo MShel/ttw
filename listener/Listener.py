@@ -1,15 +1,11 @@
 import socket
-import subprocess
 import netifaces
 from datetime import datetime
-from pprint import pprint
-import json
-import threading
 from struct import unpack
 from listener.packets.ipPacket import IpPacket 
 from listener.packets.factories.ipFactory import IpFactory
-from listener.packets.abstractPacket import AbstractPacket
 from stats.sessionData import SessionData
+from stats.factories.SqlFactory import SqlFactory
 
 class Listener:
     
@@ -18,7 +14,7 @@ class Listener:
     BUFFER_SIZE = 65565
     
     
-    def __init__(self, protocol='all', verbose=False, nic='all'):
+    def __init__(self, protocol='all', verbose=False, nic='all', adapter='sqlite', dbFilePath='ttw'):
         self.logger = None
         self.protocols = [['tcp', 6], ['udp', 17], ['icmp', 1], ['all', 0]]
         self.startDateTime = datetime.now();
@@ -27,6 +23,7 @@ class Listener:
         self.setNic(nic)
         self.protocolIndex = list(filter(lambda pr: pr[0] == self.getProtocol(), self.protocols))[0][1]
         self.sessionData = SessionData()
+        self.statAdapter = self.getAdapter(adapter, dbFilePath)
         # self.interfaces = self.getInterfaces()
         # self.getAllConnections()
         
@@ -65,6 +62,10 @@ class Listener:
                     if self.getVerbose() == True: print(packetObj.getMsg())
                     if self.getLogger() != None:  packetObj.writeToLog(self.getLogger(), self.getLogFormat())
                     self.sessionData.addPacket(ipObj, packetObj)
+                    packetObj.toAddress = ipObj.toAddress
+                    packetObj.fromAddress = ipObj.fromAddress
+                    packetObj.protocol =ipObj.protocol
+                    self.statAdapter.recordPacket(packetObj)
 
     def printStatistic(self):
         endTime = datetime.now()
@@ -94,6 +95,10 @@ class Listener:
         return self.protocol
     def setProtocol(self, protocol):
         self.protocol = str.lower(protocol)      
+    
+    def getAdapter(self, adapterName, dbFilePath):
+        adapter = SqlFactory.factory(adapterName, dbFilePath)
+        return adapter
     
     def getLogger(self):
         return self.logger

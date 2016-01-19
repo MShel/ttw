@@ -11,6 +11,10 @@ class AbstractPacket:
     
     STATUS_PARSED = 'PARSED'
     
+    toAddress = ''
+    
+    fromAddress = ''
+    
     def __init__(self):
         self.verbose = False
         self.status = None
@@ -46,9 +50,5 @@ class AbstractPacket:
     
     @staticmethod
     def getPrintable(data):
-        result = ''
-        if isinstance(data, str):
-            result = ''.join(filter(lambda x: x in string.printable, data))
-            with open('/tmp/test.txt', 'a+') as f:
-                f.write('\n\n' + result)
+        result = ''.join(filter(lambda x: x in string.printable, data))
         return result

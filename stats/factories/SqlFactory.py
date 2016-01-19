@@ -11,13 +11,18 @@ class SqlFactory(AbstractFactory):
     
    
     @staticmethod
-    def factory(factoryType: str, credentials: dict) -> AbstractAdapter:
+    def factory(factoryType: str, credentials: object) -> AbstractAdapter:
         adapter = None
         if factoryType == 'sqlite' : adapter = SqliteAdapter(credentials)
         elif factoryType == 'mysql' : adapter = MysqlAdapter(credentials)
-        SqlFactory.buildSchema(adapter,adapter.getSchema())
+        SqlFactory.buildSchema(adapter)
         return adapter
     
     @staticmethod
-    def buildSchema(adapter: AbstractAdapter, schema: str):
-        pass 
+    def buildSchema(adapter: AbstractAdapter):
+        try:
+            adapter.executeSchema()
+        except Exception as e:
+            #do nothing we already have schema
+            pass
+             

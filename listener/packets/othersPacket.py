@@ -7,6 +7,7 @@ class OthersPacket(AbstractPacket):
         self.headerMargin = margin
         self.toPort = 'others'
         self.fromPort = 'others'
+        self.data = ' '
         self.parse()
     
     def parse(self):
