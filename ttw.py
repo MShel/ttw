@@ -51,9 +51,9 @@ def main(argv):
     except PermissionError:
         print('You must run it from root to get an access to all connections')
         sys.exit(2)
-    #except Exception as e:
-        #print(e)
-        #sys.exit(2)
+    except Exception as e:
+        print(e)
+        sys.exit(2)
     except IndexError:
         print('Provided protocol is not supported')
         sys.exit(2)
