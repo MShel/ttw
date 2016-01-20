@@ -18,11 +18,13 @@ def main(argv):
           --protocol=tcp|udp|icmp|all listen to {protocol} connections
           --nic= wlan0|lo|eth0 network interfaces
         '''
-   
+        
+        adapterType = ''
+        credentials = {}
         verbose = False
         protocol = 'all'
         nic = 'all'
-        credentials = {}
+        
         #here you can specify config for stat adapter for now its sqlite adapter
         adapterType = 'sqlite'
         credentials['dbFilePath'] = 'ttw'

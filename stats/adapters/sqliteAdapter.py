@@ -1,8 +1,9 @@
 from listener.packets.abstractPacket import AbstractPacket
 from pprint import pprint
 import sqlite3
+from stats.adapters.abstractAdapter import AbstractAdapter
 
-class SqliteAdapter:
+class SqliteAdapter(AbstractAdapter):
     
     sqliteConnection = None
    

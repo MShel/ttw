@@ -8,15 +8,15 @@ command examples:
 
 for now only IP family is going to be supported...
 Trello board with all the plans: [trelloLinkToBoard](https://trello.com/b/MuG5Nhqr/python-all-the-outcoming-connections)
+
+By default all the requests will be logged in sqlite database called `ttw` in the same directory
+To edit this settings, or disable it completely open file called *ttw.py* and edit lines *27,28*
 ## Things you need to run it
 * linux
 * root rights
 * python3
 * netifaces
 
-## Comming soon
-* Stat factory + statMysqlHandler
-* more packet classes to support more protocols
 
 ## Example Report for TCP with verbose Of
 ```
