@@ -22,6 +22,10 @@ def main(argv):
         verbose = False
         protocol = 'all'
         nic = 'all'
+        credentials = {}
+        #here you can specify config for stat adapter for now its sqlite adapter
+        adapterType = 'sqlite'
+        credentials['dbFilePath'] = 'ttw'
         
         for opt, arg in opts:
             if opt in ('--help', '-h'):
@@ -37,7 +41,7 @@ def main(argv):
             if opt == '--nic' and arg.lower() in Listener.getInterfaces():
                 nic = arg.lower()
                 
-        listener = Listener(protocol, verbose, nic)
+        listener = Listener(protocol, verbose, nic, adapterType, credentials)
             
         listener.getPartyStarted()
         
@@ -47,9 +51,9 @@ def main(argv):
     except PermissionError:
         print('You must run it from root to get an access to all connections')
         sys.exit(2)
-    except Exception as e:
-        print(e)
-        sys.exit(2)
+    #except Exception as e:
+        #print(e)
+        #sys.exit(2)
     except IndexError:
         print('Provided protocol is not supported')
         sys.exit(2)

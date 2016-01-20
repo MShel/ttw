@@ -2,7 +2,7 @@ from stats.factories.abstractFactory import AbstractFactory
 from stats.adapters.abstractAdapter import AbstractAdapter
 from stats.adapters.sqliteAdapter import SqliteAdapter
 from stats.adapters.mysqlAdapter import MysqlAdapter
-
+import sqlite3
 
 class SqlFactory(AbstractFactory):
     
@@ -11,10 +11,10 @@ class SqlFactory(AbstractFactory):
     
    
     @staticmethod
-    def factory(factoryType: str, credentials: object) -> AbstractAdapter:
+    def factory(adapterType: str, credentials: dict) -> AbstractAdapter:
         adapter = None
-        if factoryType == 'sqlite' : adapter = SqliteAdapter(credentials)
-        elif factoryType == 'mysql' : adapter = MysqlAdapter(credentials)
+        if adapterType == 'sqlite' : adapter = SqliteAdapter(credentials)
+        elif adapterType == 'mysql' : adapter = MysqlAdapter(credentials)
         SqlFactory.buildSchema(adapter)
         return adapter
     
@@ -22,7 +22,9 @@ class SqlFactory(AbstractFactory):
     def buildSchema(adapter: AbstractAdapter):
         try:
             adapter.executeSchema()
-        except Exception as e:
-            #do nothing we already have schema
-            pass
-             
+        except sqlite3.OperationalError as e:
+            if str(e).find('already exists') != -1 :
+                #do nothing we already have schema
+                pass
+            else:
+                print(e) 

@@ -8,8 +8,8 @@ class SqliteAdapter:
    
                
     
-    def __init__(self, credentials:object):
-        self.sqliteConnection = sqlite3.connect(credentials)
+    def __init__(self, credentials: dict):
+        self.sqliteConnection = sqlite3.connect(credentials['dbFilePath'])
         self.schemas = ["""CREATE TABLE `packet_stats` (
                      `id` INTEGER PRIMARY KEY AUTOINCREMENT,
                      `toAddress` varchar(255) DEFAULT '',
@@ -19,7 +19,7 @@ class SqliteAdapter:
                      `fromPort`int(11) DEFAULT '0',
                      `created_at` datetime default current_timestamp
                      );
-                    """,""" CREATE TABLE `packet_data` (
+                    """, """ CREATE TABLE `packet_data` (
                      `id` INTEGER PRIMARY KEY AUTOINCREMENT,
                      `packet_id`int(11) DEFAULT '0',
                      `packet_data` TEXT DEFAULT '',
