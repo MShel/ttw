@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+import string
 
 class AbstractPacket:
     
@@ -9,6 +10,10 @@ class AbstractPacket:
     STATUS_INITIATED = 'INITIATED'
     
     STATUS_PARSED = 'PARSED'
+    
+    toAddress = ''
+    
+    fromAddress = ''
     
     def __init__(self):
         self.verbose = False
@@ -42,3 +47,8 @@ class AbstractPacket:
     def addMsg(self, msg:str):
         AbstractPacket.msg = AbstractPacket.getMsg(AbstractPacket)+'\n'+msg
         return AbstractPacket.msg   
+    
+    @staticmethod
+    def getPrintable(data):
+        result = ''.join(filter(lambda x: x in string.printable, data))
+        return result
